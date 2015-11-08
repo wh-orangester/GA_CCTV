@@ -1,23 +1,32 @@
 #include <stdio.h>
 #include <math.h>
 
+double distance(int ax, int ay, int cx, int cy) {
+    return pow(((ax - cx) * (ax - cx)) + ((ay - cy) * (ay - cy)), 0.5);
+}
+int visibility(int ax, int ay, int cx, int cy, double cmin, double cmax) {
+    double theta;
+    theta = atan2(ay - cy, ax - cx) * 180 / M_PI;
+    return (cmin < cmax) ? (theta > cmin && theta < cmax) : (theta < cmin || theta > cmax);
+}
 int main() {
-    int a1_coordinate[2] = {10, 10};
-    int c1_coordinate[2] = {20, 20};
-    double c1_direction = -140;
-    double c1_visual_angle = 60;
-    double c1_min_angle;
-    double c1_max_angle;
-    double t11;
-    int v11;
+    int i, j;
+    int ax[5] = {10, 15, 4, 7, 28};
+    int ay[5] = {10, 2, 6, 9, 12};
+    int cx[5] = {20, 10, 0, 15, 30};
+    int cy[5] = {20, 0, 0, 10, 25};
+    double cd[5] = {0, 45, 180, -135, -90};
+    double cva[5] = {60, 60, 60, 90, 120};
+    double cmin;
+    double cmax;
 
-    c1_min_angle = c1_direction - (c1_visual_angle / 2);
-    c1_max_angle = c1_direction + (c1_visual_angle / 2);
-    c1_max_angle -= (c1_max_angle > 180) ? 360 : 0;
-    t11 = atan2(a1_coordinate[1] - c1_coordinate[1], a1_coordinate[0] - c1_coordinate[0]) * 180 / M_PI;
-    v11 = (c1_min_angle < c1_max_angle) ? (t11 > c1_min_angle && t11 < c1_max_angle) : (t11 < c1_min_angle || t11 > c1_max_angle);
-
-    printf("Visible range of CCTV, c1: [%lf, %lf]\n", c1_min_angle, c1_max_angle);
-    printf("Theta 1-1: %lf\n", t11);
-    printf("Visibility 1-1: %d\n", v11);
+    for(i = 0; i < 5; i++) {
+        cmin = cd[i] - (cva[i] / 2);
+        cmax = cd[i] + (cva[i] / 2);
+        cmax -= (cmax > 180) ? 360 : 0;
+        for(j = 0; j < 5; j++) {
+            if(visibility(ax[j], ay[j], cx[i], cy[i], cmin, cmax))
+                printf("C%d-A%d: %lf\n", i, j, 48 / pow(distance(ax[j], ay[j], cx[i], cy[i]), 2));
+        }
+    }
 }
