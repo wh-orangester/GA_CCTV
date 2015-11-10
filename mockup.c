@@ -1,32 +1,45 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
-double distance(int ax, int ay, int cx, int cy) {
-    return pow(((ax - cx) * (ax - cx)) + ((ay - cy) * (ay - cy)), 0.5);
+typedef struct {
+    int x;
+    int y;
+} point;
+typedef struct {
+    int type;
+    double dir;
+} gene;
+
+const double cva[4] = {0, 60, 90, 120};
+const double cc[4] = {0, 3, 6, 12};
+const point a[5] = {{10, 10}, {15, 2}, {4, 6}, {7, 9}, {28, 12}};
+const point c[5] = {{20, 20}, {10, 0}, {0, 0}, {15, 10}, {30, 25}};
+
+double distance(point a, point c) {
+    return pow(((a.x - c.x) * (a.x - c.x)) + ((a.y - c.y) * (a.y - c.y)), 0.5);
 }
-int visibility(int ax, int ay, int cx, int cy, double cmin, double cmax) {
-    double theta;
-    theta = atan2(ay - cy, ax - cx) * 180 / M_PI;
-    return (cmin < cmax) ? (theta > cmin && theta < cmax) : (theta < cmin || theta > cmax);
+double * visiblerange(gene g) {
+    double * vrange = (double *) calloc(2, sizeof(double));
+    vrange[0] = g.dir - (cva[g.type] / 2);
+    vrange[1] = g.dir + (cva[g.type] / 2);
+    vrange[1] -= (vrange[1] > 180) ? 360 : 0;
+    return vrange;
+}
+int visible(point c, point a, double * crange) {
+    double theta = atan2(a.y - c.y, a.x - c.x) * 180 / M_PI;
+    return (crange[0] <= crange[1]) ? (theta > crange[0] && theta < crange[1]) : (theta < crange[0] || theta > crange[1]);
 }
 int main() {
     int i, j;
-    int ax[5] = {10, 15, 4, 7, 28};
-    int ay[5] = {10, 2, 6, 9, 12};
-    int cx[5] = {20, 10, 0, 15, 30};
-    int cy[5] = {20, 0, 0, 10, 25};
-    double cd[5] = {0, 45, 180, -135, -90};
-    double cva[5] = {60, 60, 60, 90, 120};
-    double cmin;
-    double cmax;
+    double * vrange;
+    gene g[5] = {{0, 0}, {0, 45}, {1, 180}, {2, -135}, {3, -90}};
 
     for(i = 0; i < 5; i++) {
-        cmin = cd[i] - (cva[i] / 2);
-        cmax = cd[i] + (cva[i] / 2);
-        cmax -= (cmax > 180) ? 360 : 0;
+        vrange = visiblerange(g[i]);
         for(j = 0; j < 5; j++) {
-            if(visibility(ax[j], ay[j], cx[i], cy[i], cmin, cmax))
-                printf("C%d-A%d: %lf\n", i, j, 48 / pow(distance(ax[j], ay[j], cx[i], cy[i]), 2));
+            if(visible(c[i], a[j], vrange))
+                printf("C%d-A%d: %lf\n", i, j, distance(a[j], c[i]));
         }
     }
 }
