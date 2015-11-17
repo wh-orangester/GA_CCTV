@@ -126,6 +126,6 @@ int main() {
 
     loadData("input.txt");
     testData();
-    population = initialze();
-    for(i = 1; i <= 1000; i++) population = evole(population);
+    population = initialize();
+    for(i = 2; i <= 1000; i++) population = evole(population);
 }
