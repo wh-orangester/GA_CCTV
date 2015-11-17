@@ -106,9 +106,11 @@ void evaluateFitness(gene * individual) {
     // applying penalty
 }
 void sortPopulation(gene * population) {
-    // sort individuals in the population according to their fitness
+    // by Peter
+    // sort individuals in the population according to their fitness in descending
 }
 gene * initialize() {
+    // by Peter
     // generate a random population: array of random-generated gene
     // evaluate each individual in the population: evaluateFitness()
     // sort population according to fitness: sortPopulation()
