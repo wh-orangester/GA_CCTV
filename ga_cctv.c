@@ -131,11 +131,22 @@ void evaluateAverageSecureness(gene * individual) {
     for(j = 0; j < a_count; j++) {
         a_secureness = 1;
         for(i = 0; i < c_count; i++) a_secureness = a_secureness * (1 - secureness[i][j]);
-        (*individual).fitness += (1 / a_count) * (1 - a_secureness);
+        (*individual).fitness += (1.0 / a_count) * (1 - a_secureness);
     }
 }
 void sortPopulation(gene * population) {
     // sort individuals in the population according to their fitness
+    int i, j;
+    double a;
+    for(i = 0; i < POPULATION_SIZE; i++) {
+        for(j = i + 1; j < POPULATION_SIZE; j++) {
+            if(population[i].fitness < population[j].fitness) {
+                a = population[i].fitness;
+                population[i].fitness = population[j].fitness;
+                population[j].fitness = a;
+            }
+        }
+    }
 }
 gene * initialize() {
     // generate a random population: array of random-generated gene
