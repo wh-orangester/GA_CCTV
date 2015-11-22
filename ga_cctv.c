@@ -161,7 +161,7 @@ GENE_T * initialize() {
 
     GENE_T *population=(GENE_T*) malloc(sizeof(GENE_T)*POPULATION_SIZE);
     if (population==NULL){
-        printf("Error allocating particular gene number %d\n",&i);
+        printf("Error allocating particular gene number %d\n",i);
         exit(0);
     }
     //generate random value for types and directions in each population
