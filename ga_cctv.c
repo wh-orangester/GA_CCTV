@@ -96,13 +96,13 @@ void testData() {
     }
 }
 
-gene parentSelection(gene * population) {
+GENE_T parentSelection(GENE_T * population) {
     // ** Roulette Wheel Selection **
 }
-gene crossingOver(gene parent1, gene parent2) {
+GENE_T crossingOver(GENE_T parent1, GENE_T parent2) {
 
 }
-void evaluateAverageSecureness(gene * individual) {
+void evaluateAverageSecureness(GENE_T * individual) {
     double secureness[MAX_CCTV][MAX_ARTIFACT], a_secureness;
     double min_vrange, max_vrange, deg;
     int i, j;
@@ -135,11 +135,9 @@ void evaluateAverageSecureness(gene * individual) {
         (*individual).fitness += (1.0 / a_count) * (1 - a_secureness);
     }
 }
-void sortPopulation(gene * population) {
-<<<<<<< HEAD
+void sortPopulation(GENE_T * population) {
     // sort individuals in the population according to their fitness in descending
-=======
-    // sort individuals in the population according to their fitness
+
     int i, j;
     double a;
     for(i = 0; i < POPULATION_SIZE; i++) {
@@ -151,24 +149,25 @@ void sortPopulation(gene * population) {
             }
         }
     }
->>>>>>> master
 }
-gene * initialize() {
+GENE_T * initialize() {
     // by Peter
     // generate a random population: array of random-generated gene
     // evaluate each individual in the population: evaluateFitness()
     // sort population according to fitness: sortPopulation()
 
     //allocate array of population
-    GENE_T **populationArray = (GENE_T**) malloc(POPULATION_SIZE,sizeof(GENE_T*));
-    if (populationArray=NULL){
-        printf("Error allocating array of genes\n", );
+    int i, j; //counter
+
+    GENE_T **populationArray = (GENE_T**) malloc(sizeof(GENE_T*));
+    if (populationArray==NULL){
+        printf("Error allocating array of genes\n");
         exit(0);
     }
     //allocate particular gene and keep it in geneArray
     for (i=0;i<POPULATION_SIZE;i++){
-        popTmp=(GENE_T*) malloc(1,sizeof(GENE_T));
-        if (popTmp=NULL){
+        GENE_T *popTmp=(GENE_T*) malloc(sizeof(GENE_T));
+        if (popTmp==NULL){
             printf("Error allocating particular gene number %d\n",&i);
             exit(0);
         }
@@ -193,7 +192,7 @@ gene * initialize() {
     }
 }
 
-gene * evolve(gene * population) {
+GENE_T * evolve(GENE_T * population) {
     // move elites to new generation
     // geneate the offspring for non-elite individuals replacement: crossingOver()
     // evaluate new individuals: evaluateFitness()
@@ -202,10 +201,10 @@ gene * evolve(gene * population) {
 
 int main() {
     int i, pop_size;
-    gene * population;
+    GENE_T * population;
 
     loadData("input.txt");
     testData();
     population = initialize();
-    for(i = 2; i <= 1000; i++) population = evole(population);
+    for(i = 2; i <= 1000; i++) population = evolve(population);
 }
