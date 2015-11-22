@@ -135,9 +135,8 @@ void evaluateAverageSecureness(GENE_T * individual) {
         (*individual).fitness += (1.0 / a_count) * (1 - a_secureness);
     }
 }
-void sortPopulation(GENE_T * population) {
-    // sort individuals in the population according to their fitness in descending
-
+void sortPopulation(gene * population) {
+    // sort individuals in the population according to their fitness in descending order
     int i, j;
     double a;
     for(i = 0; i < POPULATION_SIZE; i++) {
@@ -166,7 +165,7 @@ GENE_T * initialize() {
     }
     //generate random value for types and directions in each population
     for (i=0;i<POPULATION_SIZE;i++){
-        for (j=0;j<MAX_CCTV;j++){
+        for (j=0;j<c_count;j++){
             srand(time(NULL));
             population[i].type[j]=rand() % t_count;
             srand(time(NULL));
@@ -174,10 +173,13 @@ GENE_T * initialize() {
         }
     }
     //evaluate fitness/secureness of each pop
-    evaluateAverageSecureness(population);
+    for(i = 0; i < POPULATION_SIZE; i++)
+        evaluateAverageSecureness(&population[i]);
 
     //sort pop by fitness in descending
     sortPopulation(population);
+
+    return population;
 }
 
 GENE_T * evolve(GENE_T * population) {
