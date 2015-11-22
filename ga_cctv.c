@@ -101,13 +101,56 @@ gene parentSelection(gene * population) {
 gene crossingOver(gene parent1, gene parent2) {
 
 }
-void evaluateFitness(gene * individual) {
-    // an algorithm to evaluate individual's fitness
-    // applying penalty
+void evaluateAverageSecureness(gene * individual) {
+    double secureness[MAX_CCTV][MAX_ARTIFACT], a_secureness;
+    double min_vrange, max_vrange, deg;
+    int i, j;
+    int visible;
+
+    for(i = 0; i < c_count; i++) {
+        if((*individual).type[i] == 0) {
+            for(j = 0; j < a_count; j++) secureness[i][j] = 0;
+        }
+        else {
+            min_vrange = (*individual).dir[i] - (cva[(*individual).type[i]] / 2);
+            max_vrange = (*individual).dir[i] + (cva[(*individual).type[i]] / 2);
+            max_vrange -= (max_vrange > 180) ? 360 : 0;
+            for(j = 0; j < a_count; j++) {
+                if(ca_dis[i][j] == -1) secureness[i][j] = 0;
+                else {
+                    deg = ca_deg[i][j];
+                    visible = (min_vrange <= max_vrange) ? (deg > min_vrange && deg < max_vrange) : (deg < min_vrange || deg > min_vrange);
+                    if(!visible) secureness[i][j] = 0;
+                    else secureness[i][j] = 1 / (1 + (ca_dis[i][j] / cr[(*individual).type[i]]));
+                }
+            }
+        }
+    }
+
+    (*individual).fitness = 0;
+    for(j = 0; j < a_count; j++) {
+        a_secureness = 1;
+        for(i = 0; i < c_count; i++) a_secureness = a_secureness * (1 - secureness[i][j]);
+        (*individual).fitness += (1.0 / a_count) * (1 - a_secureness);
+    }
 }
 void sortPopulation(gene * population) {
-    // by Peter
+<<<<<<< HEAD
     // sort individuals in the population according to their fitness in descending
+=======
+    // sort individuals in the population according to their fitness
+    int i, j;
+    double a;
+    for(i = 0; i < POPULATION_SIZE; i++) {
+        for(j = i + 1; j < POPULATION_SIZE; j++) {
+            if(population[i].fitness < population[j].fitness) {
+                a = population[i].fitness;
+                population[i].fitness = population[j].fitness;
+                population[j].fitness = a;
+            }
+        }
+    }
+>>>>>>> master
 }
 gene * initialize() {
     // by Peter
