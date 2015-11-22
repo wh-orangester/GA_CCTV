@@ -15,7 +15,7 @@ typedef struct {
     int type[MAX_CCTV];
     double dir[MAX_CCTV];
     double fitness;
-} gene;
+} GENE_T;
 
 int c_count;
 int t_count;
@@ -95,13 +95,13 @@ void testData() {
     }
 }
 
-gene parentSelection(gene * population) {
+GENE_T parentSelection(GENE_T * population) {
     // ** Roulette Wheel Selection **
 }
-gene crossingOver(gene parent1, gene parent2) {
+GENE_T crossingOver(GENE_T parent1, GENE_T parent2) {
 
 }
-void evaluateAverageSecureness(gene * individual) {
+void evaluateAverageSecureness(GENE_T * individual) {
     double secureness[MAX_CCTV][MAX_ARTIFACT], a_secureness;
     double min_vrange, max_vrange, deg;
     int i, j;
@@ -134,7 +134,7 @@ void evaluateAverageSecureness(gene * individual) {
         (*individual).fitness += (1.0 / a_count) * (1 - a_secureness);
     }
 }
-void sortPopulation(gene * population) {
+void sortPopulation(GENE_T * population) {
     // sort individuals in the population according to their fitness
     int i, j;
     double a;
@@ -148,12 +148,12 @@ void sortPopulation(gene * population) {
         }
     }
 }
-gene * initialize() {
+GENE_T * initialize() {
     // generate a random population: array of random-generated gene
     // evaluate each individual in the population: evaluateFitness()
     // sort population according to fitness: sortPopulation()
 }
-gene * evolve(gene * population) {
+GENE_T * evolve(GENE_T * population) {
     // move elites to new generation
     // geneate the offspring for non-elite individuals replacement: crossingOver()
     // evaluate new individuals: evaluateFitness()
@@ -162,7 +162,7 @@ gene * evolve(gene * population) {
 
 int main() {
     int i;
-    gene * current_generation, next_generation;
+    GENE_T * current_generation, next_generation;
 
     loadData("input.txt");
     testData();
