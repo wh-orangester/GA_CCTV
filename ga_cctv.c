@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <math.h>
 
 #define MAX_CCTV 50
@@ -157,23 +158,41 @@ gene * initialize() {
     // generate a random population: array of random-generated gene
     // evaluate each individual in the population: evaluateFitness()
     // sort population according to fitness: sortPopulation()
-    GENE_T **geneArray = (GENE_T**) malloc(POPULATION_SIZE,sizeof(GENE_T*));
-    if (geneArray=NULL){
+
+    //allocate array of population
+    GENE_T **populationArray = (GENE_T**) malloc(POPULATION_SIZE,sizeof(GENE_T*));
+    if (populationArray=NULL){
         printf("Error allocating array of genes\n", );
         exit(0);
     }
+    //allocate particular gene and keep it in geneArray
     for (i=0;i<POPULATION_SIZE;i++){
-        geneTmp=(GENE_T*) malloc(1,sizeof(GENE_T));
-        if (geneTmp=NULL){
+        popTmp=(GENE_T*) malloc(1,sizeof(GENE_T));
+        if (popTmp=NULL){
             printf("Error allocating particular gene number %d\n",&i);
             exit(0);
         }
-        else {
-            geneArray[i]=geneTmp;
+        populationArray[i] = popTmp;
+    }
+    //generate random value for types and directions in each population
+    for (i=0;i<POPULATION_SIZE;i++){
+        for (j=0;j<MAX_CCTV;j++){
+            srand(time(NULL));
+            populationArray[i]->type[j]=rand() % t_count;
+            srand(time(NULL));
+            populationArray[i]->dir[j] = (double) ((rand()%8)-3)*45;
         }
-
+    }
+    //evaluate fitness/secureness of each pop
+    for (i=0; i<POPULATION_SIZE;i++){
+        evaluateAverageSecureness(populationArray[i]);
+    }
+    //sort pop by fitness in descending
+    for (i=0; i<POPULATION_SIZE;i++){
+        sortPopulation(populationArray[i]);
     }
 }
+
 gene * evolve(gene * population) {
     // move elites to new generation
     // geneate the offspring for non-elite individuals replacement: crossingOver()
