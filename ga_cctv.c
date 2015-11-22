@@ -159,37 +159,25 @@ GENE_T * initialize() {
     //allocate array of population
     int i, j; //counter
 
-    GENE_T **populationArray = (GENE_T**) malloc(sizeof(GENE_T*));
-    if (populationArray==NULL){
-        printf("Error allocating array of genes\n");
+    GENE_T *population=(GENE_T*) malloc(sizeof(GENE_T)*POPULATION_SIZE);
+    if (population==NULL){
+        printf("Error allocating particular gene number %d\n",&i);
         exit(0);
-    }
-    //allocate particular gene and keep it in geneArray
-    for (i=0;i<POPULATION_SIZE;i++){
-        GENE_T *popTmp=(GENE_T*) malloc(sizeof(GENE_T));
-        if (popTmp==NULL){
-            printf("Error allocating particular gene number %d\n",&i);
-            exit(0);
-        }
-        populationArray[i] = popTmp;
     }
     //generate random value for types and directions in each population
     for (i=0;i<POPULATION_SIZE;i++){
         for (j=0;j<MAX_CCTV;j++){
             srand(time(NULL));
-            populationArray[i]->type[j]=rand() % t_count;
+            population[i].type[j]=rand() % t_count;
             srand(time(NULL));
-            populationArray[i]->dir[j] = (double) ((rand()%8)-3)*45;
+            population[i].dir[j] = (double) ((rand()%8)-3)*45;
         }
     }
     //evaluate fitness/secureness of each pop
-    for (i=0; i<POPULATION_SIZE;i++){
-        evaluateAverageSecureness(populationArray[i]);
-    }
+    evaluateAverageSecureness(population);
+
     //sort pop by fitness in descending
-    for (i=0; i<POPULATION_SIZE;i++){
-        sortPopulation(populationArray[i]);
-    }
+    sortPopulation(populationArray[i]);
 }
 
 GENE_T * evolve(GENE_T * population) {
