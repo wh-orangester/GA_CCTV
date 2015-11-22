@@ -169,7 +169,7 @@ int main() {
     current_generation = initialize();
     for(i = 2; i <= 1000; i++) {
         next_generation = evole(current_generation);
-        clear(current_generation);
+        free(current_generation);
         current_generation = next_generation;
     }
 }
