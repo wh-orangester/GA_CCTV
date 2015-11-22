@@ -49,7 +49,7 @@ void loadData(char * infile) {
 
     fp = fopen(infile, "r");
     c_count = 0;
-    t_count = 0;
+    t_count = 1;
     a_count = 0;
     o_count = 0;
     while(fscanf(fp, "%c", &type) != EOF){
@@ -190,11 +190,15 @@ GENE_T * evolve(GENE_T * population) {
 }
 
 int main() {
-    int i, pop_size;
-    GENE_T * population;
+    int i;
+    GENE_T * current_generation, next_generation;
 
     loadData("input.txt");
     testData();
-    population = initialize();
-    for(i = 2; i <= 1000; i++) population = evolve(population);
+    current_generation = initialize();
+    for(i = 2; i <= 1000; i++) {
+        next_generation = evole(current_generation);
+        free(current_generation);
+        current_generation = next_generation;
+    }
 }
