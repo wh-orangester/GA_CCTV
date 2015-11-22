@@ -177,7 +177,7 @@ GENE_T * initialize() {
     evaluateAverageSecureness(population);
 
     //sort pop by fitness in descending
-    sortPopulation(populationArray[i]);
+    sortPopulation(population);
 }
 
 GENE_T * evolve(GENE_T * population) {
