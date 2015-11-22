@@ -15,7 +15,7 @@ typedef struct {
     int type[MAX_CCTV];
     double dir[MAX_CCTV];
     double fitness;
-} gene;
+} GENE_T;
 
 int c_count;
 int t_count;
@@ -157,6 +157,22 @@ gene * initialize() {
     // generate a random population: array of random-generated gene
     // evaluate each individual in the population: evaluateFitness()
     // sort population according to fitness: sortPopulation()
+    GENE_T **geneArray = (GENE_T**) malloc(POPULATION_SIZE,sizeof(GENE_T*));
+    if (geneArray=NULL){
+        printf("Error allocating array of genes\n", );
+        exit(0);
+    }
+    for (i=0;i<POPULATION_SIZE;i++){
+        geneTmp=(GENE_T*) malloc(1,sizeof(GENE_T));
+        if (geneTmp=NULL){
+            printf("Error allocating particular gene number %d\n",&i);
+            exit(0);
+        }
+        else {
+            geneArray[i]=geneTmp;
+        }
+
+    }
 }
 gene * evolve(gene * population) {
     // move elites to new generation
