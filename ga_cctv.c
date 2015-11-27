@@ -99,9 +99,69 @@ void testData() {
 GENE_T parentSelection(GENE_T * population) {
     // ** Roulette Wheel Selection **
 }
-GENE_T crossingOver(GENE_T parent1, GENE_T parent2) {
-
+//there's chance that gene will mutate
+void mutation(GENE_T* child, int i){
+    (*child).type[i] = rand() % t_count;;
+    (*child).dir[i]  = (double) ((rand()%8)-3)*45;
+    printf("Mutation occur! type %d dir %lf\n", (*child).type[i],(*child).dir[i] );
 }
+// crossingOver function
+GENE_T crossingOver(GENE_T* pop, int p1, int p2){
+    int i;
+    int j;
+    int temp1=0, temp2 = 0;
+    int point1, point2; //crossing over point
+    double muChance; //mutation chance if less than MUTATION_RATE, it mutate
+    GENE_T child;
+    int region = 3; //region of crossing over. may be array of int. decide it later.
+    srand(time(NULL));
+
+    while (temp1==temp2){
+        temp1=rand()%c_count;
+        temp2=rand()%c_count;
+    }
+    if (temp1<temp2){
+        point1=temp1;
+        point2=temp2;
+    }
+    else{
+        point1=temp2;
+        point2=temp1;
+    }
+    printf("point1: %d point2: %d\n",point1,point2 );
+    for (i=0;i<point1;i++){
+        muChance= (double)((rand()%100)+1)/100;
+        printf("muchance %lf\n", muChance);
+        if (muChance<MUTATION_RATE)
+            mutation(&child,i);
+        else {
+            child.type[i]= pop[p1].type[i];
+            child.dir[i] = pop[p1].dir[i];
+        }
+    }
+
+    for (i=point1;i<point2;i++){
+        muChance= (double)((rand()%100)+1)/100;
+        if (muChance<MUTATION_RATE)
+            mutation(&child,i);
+        else {
+            child.type[i]= pop[p2].type[i];
+            child.dir[i] = pop[p2].dir[i];
+        }
+    }
+
+    for (i=point2;i<c_count;i++){
+        muChance= (double)((rand()%100)+1)/100;
+        if (muChance<MUTATION_RATE)
+            mutation(&child,i);
+        else {
+            child.type[i]= pop[p1].type[i];
+            child.dir[i] = pop[p1].dir[i];
+        }
+    }
+    return child;
+}
+
 void evaluateAverageSecureness(GENE_T * individual) {
     double secureness[MAX_CCTV][MAX_ARTIFACT], a_secureness;
     double min_vrange, max_vrange, deg;
