@@ -96,8 +96,34 @@ void testData() {
     }
 }
 
-GENE_T parentSelection(GENE_T * population) {
-    // ** Roulette Wheel Selection **
+int parentSelection(GENE_T * population, int taboo_index) {
+    double garray[POPULATION_SIZE], r, d;
+    int i, j;
+
+    for(i = 0; i <= POPULATION_SIZE - 1; i++){
+        if(i == 0){
+            if(taboo_index == 0) garray[i] = 0;
+            else garray[i] = population[i].fitness;
+        }
+        else{
+            if(taboo_index == i) garray[i] = garray[i - 1];
+            else garray[i] = population[i].fitness + garray[i - 1];
+        }
+        if(i == POPULATION_SIZE - 1){
+            d = RAND_MAX / garray[POPULATION_SIZE - 1];
+            srand(time(NULL));
+            r = (rand() / d);
+        }
+    }
+    for(j = 0; j <= POPULATION_SIZE - 1; j++){
+        if(j == 0 && 0 < r && r < garray[j]){
+            return j;
+        }
+        else {
+            if(r > garray[j - 1] && r <= garray[j])
+                return j;
+        }
+    }
 }
 //there's chance that gene will mutate
 void mutation(GENE_T* child, int i){
