@@ -9,7 +9,7 @@
 #define MAX_OBSTACLE 50
 #define POPULATION_SIZE 20
 #define ELITISM 0.5
-#define CROSSINGOVER_RATE 0.2
+//#define CROSSINGOVER_RATE 0.2
 #define MUTATION_RATE 0.05
 
 typedef struct {
