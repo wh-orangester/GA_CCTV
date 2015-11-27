@@ -221,7 +221,7 @@ void evaluateAverageSecureness(GENE_T * individual) {
         (*individual).fitness += (1.0 / a_count) * (1 - a_secureness);
     }
 }
-void sortPopulation(gene * population) {
+void sortPopulation(GENE_T * population) {
     // sort individuals in the population according to their fitness in descending order
     int i, j;
     double a;
@@ -273,18 +273,44 @@ GENE_T * evolve(GENE_T * population) {
     // geneate the offspring for non-elite individuals replacement: crossingOver()
     // evaluate new individuals: evaluateFitness()
     // sort population according to fitness: sortPopulation()
+    int eliteMembers;
+    int i;
+    int parent1, parent2;
+    GENE_T *evoPop=(GENE_T*) malloc(sizeof(GENE_T)*POPULATION_SIZE);
+    if (evoPop==NULL){
+        printf("Error: Cannot allocate memory!\n Exiting\n");
+        exit(0);
+    }
+
+    //use ELITISM: copy higher fitness value from highest to eliteMembers.
+    //population is already sorted highest fitness descending
+    eliteMembers=ELITISM*POPULATION_SIZE;
+    for (i=0;i<eliteMembers;i++){
+        evoPop[i]=population[i];
+    }
+    for (i=eliteMembers;i<c_count;i++){
+        parent1=parentSelection(population,-1);
+        parent2=parentSelection(population,parent1);
+        evoPop[i]=crossingOver(population,parent1,parent2);
+        evaluateAverageSecureness(&evoPop[i]);
+    }
+    sortPopulation(evoPop);
+    return evoPop;
 }
+
 
 int main() {
     int i;
-    GENE_T * current_generation, next_generation;
+    GENE_T *current_generation;
+    GENE_T *next_generation;
 
     loadData("input.txt");
     testData();
     current_generation = initialize();
     for(i = 2; i <= 1000; i++) {
-        next_generation = evole(current_generation);
+        next_generation = evolve(current_generation);
         free(current_generation);
         current_generation = next_generation;
+        printf("GEN%04d: %6.2lf\n", i, current_generation[0].fitness );
     }
 }
