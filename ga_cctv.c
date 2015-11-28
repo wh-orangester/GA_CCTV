@@ -112,7 +112,7 @@ int parentSelection(GENE_T * population, int taboo_index) {
         }
         if(i == POPULATION_SIZE - 1){
             d = RAND_MAX / garray[POPULATION_SIZE - 1];
-            srand(time(NULL));
+            //srand(time(NULL));
             r = (rand() / d);
         }
     }
@@ -130,7 +130,7 @@ int parentSelection(GENE_T * population, int taboo_index) {
 void mutation(GENE_T* child, int i){
     (*child).type[i] = rand() % t_count;;
     (*child).dir[i]  = (double) ((rand()%8)-3)*45;
-    printf("Mutation occur! type %d dir %lf\n", (*child).type[i],(*child).dir[i] );
+    //printf("Mutation occur! type %d dir %lf\n", (*child).type[i],(*child).dir[i] );
 }
 // crossingOver function
 GENE_T crossingOver(GENE_T* pop, int p1, int p2){
@@ -141,11 +141,11 @@ GENE_T crossingOver(GENE_T* pop, int p1, int p2){
     double muChance; //mutation chance if less than MUTATION_RATE, it mutate
     GENE_T child;
     int region = 3; //region of crossing over. may be array of int. decide it later.
-    srand(time(NULL));
 
     while (temp1==temp2){
         temp1=rand()%c_count;
         temp2=rand()%c_count;
+
     }
     if (temp1<temp2){
         point1=temp1;
@@ -155,10 +155,10 @@ GENE_T crossingOver(GENE_T* pop, int p1, int p2){
         point1=temp2;
         point2=temp1;
     }
-    printf("point1: %d point2: %d\n",point1,point2 );
+    //printf("point1: %d point2: %d\n",point1,point2 );
     for (i=0;i<point1;i++){
         muChance= (double)((rand()%100)+1)/100;
-        printf("muchance %lf\n", muChance);
+        //printf("muchance %lf\n", muChance);
         if (muChance<MUTATION_RATE)
             mutation(&child,i);
         else {
@@ -208,9 +208,10 @@ void evaluateAverageSecureness(GENE_T * individual) {
                 else {
                     deg = ca_deg[i][j];
                     visible = (min_vrange <= max_vrange) ? (deg > min_vrange && deg < max_vrange) : (deg < min_vrange || deg > min_vrange);
-                    if(!visible || ca_dis[i][j] < ci[(*individual).type[i]]) secureness[i][j] = 0;
+                    if(!visible || (ca_dis[i][j] < ci[(*individual).type[i]])) secureness[i][j] = 0;
                     else if(ca_dis[i][j] < cr[(*individual).type[i]]) secureness[i][j] = (ca_dis[i][j] - ci[(*individual).type[i]]) / (cr[(*individual).type[i]] - ci[(*individual).type[i]]);
                     else secureness[i][j] = pow(cr[(*individual).type[i]] / ca_dis[i][j], 2);
+                    //printf("secureness: %lf\n",secureness[i][j] );
                 }
             }
         }
@@ -245,7 +246,7 @@ GENE_T * initialize() {
 
     //allocate array of population
     int i, j; //counter
-
+    //srand(time(NULL));
     GENE_T *population=(GENE_T*) malloc(sizeof(GENE_T)*POPULATION_SIZE);
     if (population==NULL){
         printf("Error: Cannot allocate memory!\n Exiting\n");
@@ -254,9 +255,7 @@ GENE_T * initialize() {
     //generate random value for types and directions in each population
     for (i=0;i<POPULATION_SIZE;i++){
         for (j=0;j<c_count;j++){
-            srand(time(NULL));
             population[i].type[j]=rand() % t_count;
-            srand(time(NULL));
             population[i].dir[j] = (double) ((rand()%8)-3)*45;
         }
     }
@@ -290,7 +289,7 @@ GENE_T * evolve(GENE_T * population) {
     for (i=0;i<eliteMembers;i++){
         evoPop[i]=population[i];
     }
-    for (i=eliteMembers;i<c_count;i++){
+    for (i=eliteMembers;i<POPULATION_SIZE;i++){
         parent1=parentSelection(population,-1);
         parent2=parentSelection(population,parent1);
         evoPop[i]=crossingOver(population,parent1,parent2);
@@ -302,17 +301,25 @@ GENE_T * evolve(GENE_T * population) {
 
 
 int main() {
-    int i;
+    int i,j;
     GENE_T *current_generation;
     GENE_T *next_generation;
 
     loadData("input.txt");
     testData();
+    /*
+    srand(time(NULL));
     current_generation = initialize();
-    for(i = 2; i <= 1000; i++) {
+    for(i = 2; i <= 1000000; i++) {
         next_generation = evolve(current_generation);
         free(current_generation);
         current_generation = next_generation;
-        printf("GEN%04d: %6.2lf\n", i, current_generation[0].fitness );
-    }
+        printf("generation %d\n", i);
+        for (j=0;j<c_count;j++){
+            printf("cctv number: %d type: %d, dir: %lf\n", j, current_generation[0].type[j],current_generation[0].dir[j]);
+        }
+
+        printf("GEN%04d: %6.2lf, %6.2lf, %6.2lf \n", i, current_generation[0].fitness, current_generation[1].fitness, current_generation[2].fitness );
+
+    }*/
 }
