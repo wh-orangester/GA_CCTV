@@ -18,14 +18,15 @@ typedef struct {
     double fitness;
 } GENE_T;
 
-int c_count;
-int t_count;
-int a_count;
-double cva[MAX_TYPE];
-double cc[MAX_TYPE];
-double cr[MAX_TYPE];
-double ca_dis[MAX_CCTV][MAX_ARTIFACT];
-double ca_deg[MAX_CCTV][MAX_ARTIFACT];
+int c_count; // Number of point for CCTV installment
+int t_count; // Number of CCTV type including no CCTV
+int a_count; // Number of artifact needs observation
+double cva[MAX_TYPE]; // CCTV visual angle
+double cc[MAX_TYPE]; // CCTV cost
+double ci[MAX_TYPE]; // Distance from CCTV which an artifact start to be observable
+double cr[MAX_TYPE]; // Distance from CCTV which an artifact can be fully monitor; cr > ci
+double ca_dis[MAX_CCTV][MAX_ARTIFACT]; // Distance between CCTVs to artifacts
+double ca_deg[MAX_CCTV][MAX_ARTIFACT]; // An angle to artifacts with CCTVs as references
 
 int ccw(double * a, double * b, double * c) {
     double area = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
@@ -58,7 +59,7 @@ void loadData(char * infile) {
             c_count++;
         }
         else if(type == 't') {
-            fscanf(fp, "%lf %lf %lf", &cva[t_count], &cc[t_count], &cr[t_count]);
+            fscanf(fp, "%lf %lf %lf %lf", &cva[t_count], &cc[t_count], &ci[t_count], &cr[t_count]);
             t_count++;
         }
         else if(type == 'a') {
@@ -207,7 +208,8 @@ void evaluateAverageSecureness(GENE_T * individual) {
                 else {
                     deg = ca_deg[i][j];
                     visible = (min_vrange <= max_vrange) ? (deg > min_vrange && deg < max_vrange) : (deg < min_vrange || deg > min_vrange);
-                    if(!visible || ca_dis[i][j] < cr[(*individual).type[i]]) secureness[i][j] = 0;
+                    if(!visible || ca_dis[i][j] < ci[(*individual).type[i]]) secureness[i][j] = 0;
+                    else if(ca_dis[i][j] < cr[(*individual).type[i]]) secureness[i][j] = (ca_dis[i][j] - ci[(*individual).type[i]]) / (cr[(*individual).type[i]] - ci[(*individual).type[i]]);
                     else secureness[i][j] = pow(cr[(*individual).type[i]] / ca_dis[i][j], 2);
                 }
             }
