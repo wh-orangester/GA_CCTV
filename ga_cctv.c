@@ -77,7 +77,7 @@ void loadData(char * infile) {
             for(k = 0; k < o_count && visible_flag; k++)
                 visible_flag = !isIntersect(&c[i][0], &a[j][0], &o[k][0]);
             if(visible_flag) {
-                ca_dis[i][j] = pow(a[j][0] - c[i][0], 2) + pow(a[j][1] - c[i][1], 2);
+                ca_dis[i][j] = sqrt(pow(a[j][0] - c[i][0], 2) + pow(a[j][1] - c[i][1], 2));
                 ca_deg[i][j] = atan2(a[j][1] - c[i][1], a[j][0] - c[i][0]) * 180 / M_PI;
             } else {
                 ca_dis[i][j] = -1;
@@ -207,8 +207,8 @@ void evaluateAverageSecureness(GENE_T * individual) {
                 else {
                     deg = ca_deg[i][j];
                     visible = (min_vrange <= max_vrange) ? (deg > min_vrange && deg < max_vrange) : (deg < min_vrange || deg > min_vrange);
-                    if(!visible) secureness[i][j] = 0;
-                    else secureness[i][j] = 1 / (1 + (ca_dis[i][j] / cr[(*individual).type[i]]));
+                    if(!visible || ca_dis[i][j] < cr[(*individual).type[i]]) secureness[i][j] = 0;
+                    else secureness[i][j] = pow(cr[(*individual).type[i]] / ca_dis[i][j], 2);
                 }
             }
         }
