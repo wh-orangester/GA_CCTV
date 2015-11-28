@@ -135,25 +135,55 @@ void evaluateAverageSecureness(GENE_T * individual) {
 }
 
 int main() {
-    int i,j;
-    GENE_T *current_generation;
-    GENE_T *next_generation;
+    int i,j,k;
+    GENE_T solution;
+    GENE_T selectSolution;
+    double bestfit=0;
+    int duplicateCounter=0;
 
-    loadData("input.txt");
+    loadData("bruteinput.txt");
     testData();
-    /*
-    srand(time(NULL));
-    current_generation = initialize();
-    for(i = 2; i <= 1000000; i++) {
-        next_generation = evolve(current_generation);
-        free(current_generation);
-        current_generation = next_generation;
-        printf("generation %d\n", i);
-        for (j=0;j<c_count;j++){
-            printf("cctv number: %d type: %d, dir: %lf\n", j, current_generation[0].type[j],current_generation[0].dir[j]);
+    for (i=0;i<c_count;i++){
+        solution.dir[i]=-135;
+        solution.type[i]=0;
+        solution.fitness=-1;
+    }
+
+    int allSolution=pow(t_count*8,c_count);
+    for (i=0;i<allSolution;i++){
+        //evaluate
+        evaluateAverageSecureness(&solution);
+        printf("solution.fitness: %lf\n",solution.fitness );
+        if (solution.fitness > bestfit){
+            selectSolution=solution;
+            bestfit=selectSolution.fitness;
+            printf("bestfit: %lf\n",bestfit );
+            duplicateCounter=0;
+        }
+        else if (solution.fitness == bestfit){
+            duplicateCounter++;
         }
 
-        printf("GEN%04d: %6.2lf, %6.2lf, %6.2lf \n", i, current_generation[0].fitness, current_generation[1].fitness, current_generation[2].fitness );
-
-    }*/
+        j=0;
+        solution.dir[j]+=45;
+        while (j<c_count && solution.dir[j]>180) {
+            solution.dir[j]=-135;
+            j++;
+            if (j!=c_count) solution.dir[j]+=45;
+            else solution.type[0]+=1;
+        }
+        j=0;
+        while ((j<c_count) && (solution.type[j]>(t_count-1))) {
+            solution.type[j]=0;
+            j++;
+            if (j!=c_count) {
+                solution.type[j]+=1;
+            }
+        }
+        printf("----------------------------------------------\n" );
+        for (k=0;k<c_count;k++){
+            printf("Type: %d, Dir: %lf\n", solution.type[k], solution.dir[k]);
+        }
+    }
+    printf("fitness: %lf, dup: %d\n",selectSolution.fitness, duplicateCounter );
 }
