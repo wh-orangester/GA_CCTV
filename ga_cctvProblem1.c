@@ -227,13 +227,13 @@ void evaluateAverageSecureness(GENE_T * individual) {
 void sortPopulation(GENE_T * population) {
     // sort individuals in the population according to their fitness in descending order
     int i, j;
-    double a;
+    GENE_T a;
     for(i = 0; i < POPULATION_SIZE; i++) {
         for(j = i + 1; j < POPULATION_SIZE; j++) {
             if(population[i].fitness < population[j].fitness) {
-                a = population[i].fitness;
-                population[i].fitness = population[j].fitness;
-                population[j].fitness = a;
+                a = population[i];
+                population[i] = population[j];
+                population[j] = a;
             }
         }
     }
