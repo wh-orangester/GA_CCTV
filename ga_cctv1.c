@@ -304,10 +304,14 @@ int main() {
     int i,j;
     GENE_T *current_generation;
     GENE_T *next_generation;
+    clock_t start, diff;
 
-    loadData("input.txt");
+    loadData("input1.txt");
+    printf("Read file from input1.txt \n" );
     testData();
-    /*
+
+    start = clock();
+
     srand(time(NULL));
     current_generation = initialize();
     for(i = 2; i <= 1000000; i++) {
@@ -321,5 +325,9 @@ int main() {
 
         printf("GEN%04d: %6.2lf, %6.2lf, %6.2lf \n", i, current_generation[0].fitness, current_generation[1].fitness, current_generation[2].fitness );
 
-    }*/
+    }
+
+    diff = clock() - start;
+    msec = (diff*1000)/CLOCKS_PER_SEC;
+    printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
 }

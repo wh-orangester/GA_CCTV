@@ -148,10 +148,11 @@ int main() {
     clock_t start, diff;
     FILE *fp;
 
-    loadData("dummyinput.txt");
-    printf("Read file from dummpyinput.txt \n" );
+    loadData("input1.txt");
+    printf("Read file from input1.txt \n" );
     testData();
     start = clock();
+
     for (i=0;i<c_count;i++){
         solution.dir[i]=-135;
         solution.type[i]=0;
