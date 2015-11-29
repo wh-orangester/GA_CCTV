@@ -148,8 +148,8 @@ int main() {
     clock_t start, diff;
     FILE *fp;
 
-    loadData("input1.txt");
-    printf("Read file from input1.txt \n" );
+    loadData("input2.txt");
+    printf("Read file from input2.txt \n" );
     testData();
     start = clock();
 
@@ -159,8 +159,8 @@ int main() {
         solution.fitness=-1;
     }
 
-    int allSolution=pow(t_count*8,c_count);
-    printf("all solution: %d \n", allSolution);
+    unsigned long allSolution=pow(t_count*8,c_count);
+    printf("all solution: %lu \n", allSolution);
     for (i=0;i<allSolution;i++){
         //evaluate
         evaluateAverageSecureness(&solution);
@@ -213,8 +213,8 @@ int main() {
     diff = clock() - start;
     msec = (diff*1000)/CLOCKS_PER_SEC;
     printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
-    
-    fp = fopen("histogramProblem1.txt","w");
+
+    fp = fopen("histogramSet2Problem1.txt","w");
     if (fp==NULL){
         printf("Error opeining file!\n" );
         exit(0);
