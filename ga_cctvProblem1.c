@@ -327,6 +327,11 @@ int main() {
     diff = clock() - start;
     msec = (diff*1000)/CLOCKS_PER_SEC;
     fprintf(fp, "%d seconds %d milliseconds\n",msec/1000, msec%1000);
+
+    for (i=0;i<c_count;i++){
+        fprintf(fp,"dir: %lf, type: %d\n", current_generation[0].dir[i],current_generation[0].type[i]);
+    }
+
     for (i=0;i<POPULATION_SIZE;i++){
         fprintf(fp,"%lf\n",current_generation[i].fitness );
     }
@@ -342,7 +347,7 @@ int main() {
         if (milestone==i){
             fp = fopen("GA_set3prob1.txt","a+");
             if (fp==NULL){
-                printf("Error opeining file!\n" );
+                printf("Error opening file!\n" );
                 exit(0);
             }
             fprintf(fp, "---%d\n",milestone );
@@ -350,7 +355,9 @@ int main() {
             diff = clock() - start;
             msec = (diff*1000)/CLOCKS_PER_SEC;
             fprintf(fp, "%d seconds %d milliseconds\n",msec/1000, msec%1000);
-
+            for (i=0;i<c_count;i++){
+                fprintf(fp,"dir: %lf, type: %d\n", current_generation[0].dir[i],current_generation[0].type[i]);
+            }
             for (i=0;i<POPULATION_SIZE;i++){
                 fprintf(fp,"%lf\n",current_generation[i].fitness );
 

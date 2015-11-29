@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
-
 #define MAX_CCTV 50
 #define MAX_TYPE 10
 #define MAX_ARTIFACT 50
@@ -11,7 +10,7 @@
 #define ELITISM 0.5
 //#define CROSSINGOVER_RATE 0.2
 #define MUTATION_RATE 0.05
-
+#define BASE_UNMONITORED_PENALTY 0.50
 
 typedef struct {
     int type[MAX_CCTV];
@@ -28,6 +27,7 @@ double ci[MAX_TYPE]; // Distance from CCTV which an artifact start to be observa
 double cr[MAX_TYPE]; // Distance from CCTV which an artifact can be fully monitor; cr > ci
 double ca_dis[MAX_CCTV][MAX_ARTIFACT]; // Distance between CCTVs to artifacts
 double ca_deg[MAX_CCTV][MAX_ARTIFACT]; // An angle to artifacts with CCTVs as references
+double max_cc = 0; // CCTV max price
 
 int ccw(double * a, double * b, double * c) {
     double area = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
@@ -61,6 +61,7 @@ void loadData(char * infile) {
         }
         else if(type == 't') {
             fscanf(fp, "%lf %lf %lf %lf", &cva[t_count], &cc[t_count], &ci[t_count], &cr[t_count]);
+            if(cc[t_count] > max_cc) max_cc = cc[t_count];
             t_count++;
         }
         else if(type == 'a') {
@@ -98,43 +99,55 @@ void testData() {
     }
 }
 
-
-void evaluateAverageSecureness(GENE_T * individual) {
-    double secureness[MAX_CCTV][MAX_ARTIFACT], a_secureness;
+void evaluateCostFitness(GENE_T * individual) {
+    double visible[MAX_CCTV][MAX_ARTIFACT];
     double min_vrange, max_vrange, deg;
-    int i, j;
-    int visible;
+    double total_cost, penalty_ratio;
+    double temp;
+    int i, j, in_cvr, monitored, p_count;
 
+    // Evaluate each pair of cctv and artifact; whether cctv[i] can see artifact[j]
     for(i = 0; i < c_count; i++) {
         if((*individual).type[i] == 0) {
-            for(j = 0; j < a_count; j++) secureness[i][j] = 0;
+            for(j = 0; j < a_count; j++) visible[i][j] = 0;
         }
         else {
             min_vrange = (*individual).dir[i] - (cva[(*individual).type[i]] / 2);
             max_vrange = (*individual).dir[i] + (cva[(*individual).type[i]] / 2);
             max_vrange -= (max_vrange > 180) ? 360 : 0;
             for(j = 0; j < a_count; j++) {
-                if(ca_dis[i][j] == -1) secureness[i][j] = 0;
+                if(ca_dis[i][j] == -1) visible[i][j] = 0;
                 else {
                     deg = ca_deg[i][j];
-                    visible = (min_vrange <= max_vrange) ? (deg > min_vrange && deg < max_vrange) : (deg < min_vrange || deg > min_vrange);
-                    if(!visible || (ca_dis[i][j] < ci[(*individual).type[i]])) secureness[i][j] = 0;
-                    else if(ca_dis[i][j] < cr[(*individual).type[i]]) secureness[i][j] = (ca_dis[i][j] - ci[(*individual).type[i]]) / (cr[(*individual).type[i]] - ci[(*individual).type[i]]);
-                    else secureness[i][j] = pow(cr[(*individual).type[i]] / ca_dis[i][j], 2);
-                    //printf("secureness: %lf\n",secureness[i][j] );
+                    in_cvr = (min_vrange <= max_vrange) ? (deg > min_vrange && deg < max_vrange) : (deg < min_vrange || deg > min_vrange);
+                    if(!in_cvr || (ca_dis[i][j] < ci[(*individual).type[i]])) visible[i][j] = 0;
+                    else visible[i][j] = 1;
                 }
             }
         }
     }
 
-    (*individual).fitness = 0;
+    // Find total cost
+    total_cost = 0;
+    for(i = 0; i < c_count; i++) total_cost += cc[(*individual).type[i]];
+    // Calculate base fitness
+    (*individual).fitness = 0.5 + ((max_cc * c_count) - total_cost) / (2 * max_cc * c_count);
+    // Apply penalty if some artifact is not monitored
+    p_count = 0;
     for(j = 0; j < a_count; j++) {
-        a_secureness = 1;
-        for(i = 0; i < c_count; i++) a_secureness = a_secureness * (1 - secureness[i][j]);
-        (*individual).fitness += (1.0 / a_count) * (1 - a_secureness);
+        monitored = 0;
+        for(i = 0; i < c_count && !monitored; i++) {
+            monitored = visible[i][j];
+        }
+        if(!monitored) p_count++;
+    }
+    // If penalty should be applied
+    if(p_count > 0) {
+        penalty_ratio = BASE_UNMONITORED_PENALTY + (1 - BASE_UNMONITORED_PENALTY) * (p_count - 1.0) / (a_count - 1.0);
+        temp = (*individual).fitness;
+        (*individual).fitness = temp * (1 - penalty_ratio);
     }
 }
-
 int main() {
     int i,j,k;
     GENE_T solution;
