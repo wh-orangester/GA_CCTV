@@ -149,6 +149,7 @@ int main() {
     FILE *fp;
 
     loadData("dummyinput.txt");
+    printf("Read file from dummpyinput.txt \n" );
     testData();
     start = clock();
     for (i=0;i<c_count;i++){
@@ -165,7 +166,6 @@ int main() {
         //printf("solution.fitness: %lf\n",solution.fitness );
         dummy= (int) floor(solution.fitness*100);
         hist[dummy]+=1;
-
 
         if (solution.fitness > bestfit){
             selectSolution=solution;
@@ -203,13 +203,13 @@ int main() {
     printf("END brute calculation\n" );
     printf("fitness: %lf, dup: %d\n",selectSolution.fitness, duplicateCounter );
 
-    /*
+
     printf("HISTOGRAM\n" );
     for (i=0;i<101;i++){
         cummulative=cummulative+hist[i];
         printf("Value: %d, Freq: %ld, Cummulative: %d\n", i, hist[i], cummulative);
     }
-    */
+
     fp = fopen("histogramProblem1.txt","w");
     if (fp==NULL){
         printf("Error opeining file!\n" );
