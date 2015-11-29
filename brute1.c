@@ -148,7 +148,7 @@ int main() {
     clock_t start, diff;
     FILE *fp;
 
-    loadData("bruteinput.txt");
+    loadData("dummyinput.txt");
     testData();
     start = clock();
     for (i=0;i<c_count;i++){
@@ -216,7 +216,7 @@ int main() {
         exit(0);
     }
     for (i=0;i<101;i++){
-        fprintf(fp, "%d\n",hist[i] );
+        fprintf(fp, "%lu\n",hist[i] );
     }
     fclose(fp);
 
