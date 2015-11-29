@@ -12,6 +12,7 @@
 //#define CROSSINGOVER_RATE 0.2
 #define MUTATION_RATE 0.05
 
+
 typedef struct {
     int type[MAX_CCTV];
     double dir[MAX_CCTV];
@@ -140,9 +141,15 @@ int main() {
     GENE_T selectSolution;
     double bestfit=0;
     int duplicateCounter=0;
+    unsigned long hist[101]={0};
+    int dummy;
+    int msec;
+    int cummulative=0;
+    clock_t start, diff;
 
     loadData("bruteinput.txt");
     testData();
+    start = clock();
     for (i=0;i<c_count;i++){
         solution.dir[i]=-135;
         solution.type[i]=0;
@@ -150,14 +157,19 @@ int main() {
     }
 
     int allSolution=pow(t_count*8,c_count);
+    printf("all solution: %d \n", allSolution);
     for (i=0;i<allSolution;i++){
         //evaluate
         evaluateAverageSecureness(&solution);
-        printf("solution.fitness: %lf\n",solution.fitness );
+        //printf("solution.fitness: %lf\n",solution.fitness );
+        dummy= (int) floor(solution.fitness*100);
+        hist[dummy]+=1;
+
+
         if (solution.fitness > bestfit){
             selectSolution=solution;
             bestfit=selectSolution.fitness;
-            printf("bestfit: %lf\n",bestfit );
+            //printf("bestfit: %lf\n",bestfit );
             duplicateCounter=0;
         }
         else if (solution.fitness == bestfit){
@@ -180,10 +192,22 @@ int main() {
                 solution.type[j]+=1;
             }
         }
-        printf("----------------------------------------------\n" );
+        /*
         for (k=0;k<c_count;k++){
             printf("Type: %d, Dir: %lf\n", solution.type[k], solution.dir[k]);
         }
+        printf("----------------------------------------------\n" );
+        */
     }
+    printf("END brute calculation\n" );
     printf("fitness: %lf, dup: %d\n",selectSolution.fitness, duplicateCounter );
+    printf("HISTOGRAM\n" );
+    for (i=0;i<101;i++){
+        cummulative=cummulative+hist[i];
+        printf("Value: %d, Freq: %ld, Cummulative: %d\n", i, hist[i], cummulative);
+    }
+    diff = clock() - start;
+    msec = (diff*1000)/CLOCKS_PER_SEC;
+    printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
+    fopen();
 }
