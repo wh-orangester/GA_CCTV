@@ -210,7 +210,10 @@ int main() {
         cummulative=cummulative+hist[i];
         printf("Value: %d, Freq: %ld, Cummulative: %d\n", i, hist[i], cummulative);
     }
-
+    diff = clock() - start;
+    msec = (diff*1000)/CLOCKS_PER_SEC;
+    printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
+    
     fp = fopen("histogramProblem1.txt","w");
     if (fp==NULL){
         printf("Error opeining file!\n" );
@@ -221,7 +224,5 @@ int main() {
     }
     fclose(fp);
 
-    diff = clock() - start;
-    msec = (diff*1000)/CLOCKS_PER_SEC;
-    printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
+
 }

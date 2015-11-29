@@ -305,6 +305,7 @@ int main() {
     GENE_T *current_generation;
     GENE_T *next_generation;
     clock_t start, diff;
+    FILE *fp;
 
     loadData("input1.txt");
     printf("Read file from input1.txt \n" );
@@ -330,4 +331,7 @@ int main() {
     diff = clock() - start;
     msec = (diff*1000)/CLOCKS_PER_SEC;
     printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
+
+    fp = fopen("GA_output1.txt","w");
+    
 }
