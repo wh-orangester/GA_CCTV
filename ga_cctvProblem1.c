@@ -306,6 +306,8 @@ int main() {
     GENE_T *next_generation;
     clock_t start, diff;
     FILE *fp;
+    int sample, sampleCount, sampleGen;
+    int msec;
 
     loadData("input1.txt");
     printf("Read file from input1.txt \n" );
@@ -315,23 +317,36 @@ int main() {
 
     srand(time(NULL));
     current_generation = initialize();
-    for(i = 2; i <= 1000000; i++) {
-        next_generation = evolve(current_generation);
-        free(current_generation);
-        current_generation = next_generation;
-        printf("generation %d\n", i);
-        for (j=0;j<c_count;j++){
-            printf("cctv number: %d type: %d, dir: %lf\n", j, current_generation[0].type[j],current_generation[0].dir[j]);
+    //run at different number of generation
+    sample=7; //calculate repetively from 1 gen to 10^sample-1 gen
+    for (sampleCount=0;sampleCount<sample;sampleCount++){
+        sampleGen=pow(10,sampleCount);
+        for(i = 2; i <= sampleGen; i++) {
+            //GA process
+            next_generation = evolve(current_generation);
+            free(current_generation);
+            current_generation = next_generation;
+
+            //print debugging
+            printf("generation %d\n", i);
+            for (j=0;j<c_count;j++){
+                printf("cctv number: %d type: %d, dir: %lf\n", j, current_generation[0].type[j],current_generation[0].dir[j]);
+            }
+            printf("GEN%04d: %6.2lf, %6.2lf, %6.2lf \n", i, current_generation[0].fitness, current_generation[1].fitness, current_generation[2].fitness );
         }
-
-        printf("GEN%04d: %6.2lf, %6.2lf, %6.2lf \n", i, current_generation[0].fitness, current_generation[1].fitness, current_generation[2].fitness );
-
+        //print fitness to file
+        fp = fopen("GA_output1.txt","a+");
+        if (fp==NULL){
+            printf("Error opeining file!\n" );
+            exit(0);
+        }
+        fprintf(fp, "---%d\n",sampleCount );
+        for (i=0;i<POPULATION_SIZE;i++){
+            fprintf(fp,"%lf\n",current_generation[i].fitness );
+        }
+        fclose(fp);
     }
-
     diff = clock() - start;
     msec = (diff*1000)/CLOCKS_PER_SEC;
     printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
-
-    fp = fopen("GA_output1.txt","w");
-    
 }
