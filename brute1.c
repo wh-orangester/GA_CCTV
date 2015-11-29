@@ -146,6 +146,7 @@ int main() {
     int msec;
     int cummulative=0;
     clock_t start, diff;
+    FILE *fp;
 
     loadData("bruteinput.txt");
     testData();
@@ -201,13 +202,25 @@ int main() {
     }
     printf("END brute calculation\n" );
     printf("fitness: %lf, dup: %d\n",selectSolution.fitness, duplicateCounter );
+
+    /*
     printf("HISTOGRAM\n" );
     for (i=0;i<101;i++){
         cummulative=cummulative+hist[i];
         printf("Value: %d, Freq: %ld, Cummulative: %d\n", i, hist[i], cummulative);
     }
+    */
+    fp = fopen("histogramProblem1.txt","w");
+    if (fp==NULL){
+        printf("Error opeining file!\n" );
+        exit(0);
+    }
+    for (i=0;i<101;i++){
+        fprintf(fp, "%d\n",hist[i] );
+    }
+    fclose(fp);
+
     diff = clock() - start;
     msec = (diff*1000)/CLOCKS_PER_SEC;
     printf("Time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);
-    fopen();
 }
