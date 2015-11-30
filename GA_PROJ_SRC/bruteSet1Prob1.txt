@@ -1,4 +1,5 @@
-0 seconds 729 milliseconds
+Global Optimum: 0.871364, Duplication: 0
+0 seconds 693 milliseconds
 279841
 12167
 24334

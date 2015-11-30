@@ -103,6 +103,7 @@ int main(int argc, char *argv[]) {
             printf("Error opening file! %s\n", argv[2] );
             exit(0);
         }
+        fprintf(fp, "Global Optimum: %lf, Duplication: %d\n",selectSolution.fitness, duplicateCounter);
         fprintf(fp, "%d seconds %d milliseconds\n",msec/1000, msec%1000 );
         for (i=0;i<HIST_SIZE+1;i++){
             fprintf(fp, "%lu\n",hist[i] );
