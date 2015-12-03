@@ -7,6 +7,7 @@
 #define BIAS_COST 0.125
 #define BIAS_NUMBER 0.375
 #define BIAS_SECURE 0.5
+// COST = 0.125, NUMBER = 0.375, SECURE = 0.5
 
 void evaluateFitness(GENE_T * individual) {
     double secureness[MAX_CCTV][MAX_ARTIFACT], a_secureness;
