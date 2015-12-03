@@ -1,16 +1,5 @@
 #include "basic.h"
-#ifdef PROB1
-#include "fitness_secure.h"
-#endif
-#ifdef PROB2
-#include "fitness_cost.h"
-#endif
-#ifdef PROB3
-#include "fitness_number.h"
-#endif
-#ifdef PROB4
-#include "fitness_multiobj.h"
-#endif
+#include "fitness.h"
 
 #define HIST_SIZE 1000
 

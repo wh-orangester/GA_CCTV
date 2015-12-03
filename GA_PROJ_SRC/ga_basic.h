@@ -1,7 +1,7 @@
 #ifndef GA_BASIC_H
 #define GA_BASIC_H
 
-#include "fitness_multiobj.h"
+#include "fitness.h"
 
 #define POPULATION_SIZE 20
 #define ELITISM 0.5
