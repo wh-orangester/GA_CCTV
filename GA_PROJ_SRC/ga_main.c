@@ -33,17 +33,22 @@ int main(int argc, char *argv[]) {
         diff = clock() - start;
         msec = (diff*1000)/CLOCKS_PER_SEC;
         fprintf(fp, "%d seconds %d milliseconds\n",msec/1000, msec%1000);
-
+        fprintf(fp,"dir type\n");
         for (i=0;i<c_count;i++){
-            fprintf(fp,"dir: %lf, type: %d\n", current_generation[0].dir[i],current_generation[0].type[i]);
+            fprintf(fp,"%.0lf %d\n", current_generation[0].dir[i],current_generation[0].type[i]);
         }
+        fprintf(fp, "total cost: %lf\n", current_generation[0].total_cost);
+        fprintf(fp, "total number: %d\n", current_generation[0].total_number);
+        fprintf(fp, "quality: %lf\n", current_generation[0].base_secureness);
+        fprintf(fp, "unmonitor artifacts: %d\n", current_generation[0].unmonitored_count);
+        fprintf(fp, "fitness: %lf\n", current_generation[0].fitness);
 
-        for (i=0;i<POPULATION_SIZE;i++){
-            fprintf(fp,"%lf\n",current_generation[i].fitness );
-        }
+        //for (i=0;i<POPULATION_SIZE;i++){
+        //    fprintf(fp,"%lf\n",current_generation[i].fitness );
+        //}
         fclose(fp);
 
-        for(i = 2; i <= 1000000; i++) {
+        for(i = 2; i <= 100000; i++) {
             //GA process
             next_generation = evolve(current_generation);
             free(current_generation);
@@ -61,25 +66,23 @@ int main(int argc, char *argv[]) {
                 diff = clock() - start;
                 msec = (diff*1000)/CLOCKS_PER_SEC;
                 fprintf(fp, "%d seconds %d milliseconds\n",msec/1000, msec%1000);
+                fprintf(fp,"dir type\n");
                 for (i=0;i<c_count;i++){
-                    fprintf(fp,"dir: %lf, type: %d\n", current_generation[0].dir[i],current_generation[0].type[i]);
+                    fprintf(fp,"%.0lf %d\n", current_generation[0].dir[i],current_generation[0].type[i]);
                 }
-                for (i=0;i<POPULATION_SIZE;i++){
-                    fprintf(fp,"%lf\n",current_generation[i].fitness );
-                }
+                fprintf(fp, "total cost: %lf\n", current_generation[0].total_cost);
+                fprintf(fp, "total number: %d\n", current_generation[0].total_number);
+                fprintf(fp, "quality: %lf\n", current_generation[0].base_secureness);
+                fprintf(fp, "unmonitor artifacts: %d\n", current_generation[0].unmonitored_count);
+                fprintf(fp, "fitness: %lf\n", current_generation[0].fitness);
+                //for (i=0;i<POPULATION_SIZE;i++){
+                //    fprintf(fp,"%lf\n",current_generation[i].fitness );
+                //}
                 fclose(fp);
                 milestone*=10;
             }
-
-            //print debugging
-            /*
-            printf("generation %d\n", i);
-            for (j=0;j<c_count;j++){
-                printf("cctv number: %d type: %d, dir: %lf\n", j, current_generation[0].type[j],current_generation[0].dir[j]);
-            }
-            printf("GEN%04d: %6.2lf, %6.2lf, %6.2lf \n", i, current_generation[0].fitness, current_generation[1].fitness, current_generation[2].fitness );
-            */
         }
+        fclose(fp);
         diff = clock() - start;
         msec = (diff*1000)/CLOCKS_PER_SEC;
         printf("Total time: time taken %d seconds %d milliseconds\n", msec/1000, msec%1000);

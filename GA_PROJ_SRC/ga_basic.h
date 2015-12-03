@@ -1,19 +1,7 @@
 #ifndef GA_BASIC_H
 #define GA_BASIC_H
 
-#include "basic.h"
-#ifdef PROB1
-#include "fitness_secure.h"
-#endif
-#ifdef PROB2
-#include "fitness_cost.h"
-#endif
-#ifdef PROB3
-#include "fitness_number.h"
-#endif
-#ifdef PROB4
 #include "fitness_multiobj.h"
-#endif
 
 #define POPULATION_SIZE 20
 #define ELITISM 0.5

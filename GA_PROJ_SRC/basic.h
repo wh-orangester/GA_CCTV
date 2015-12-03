@@ -15,6 +15,10 @@ typedef struct {
     int type[MAX_CCTV];
     double dir[MAX_CCTV];
     double fitness;
+    double total_cost;
+    int total_number;
+    double base_secureness;
+    int unmonitored_count;
 } GENE_T;
 
 int c_count; // Number of point for CCTV installment
